@@ -2,14 +2,12 @@
 <html>
   <head>
     <title>Welcome</title>
-    <script src="https://unpkg.com/jspsych@7.1.2"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-html-keyboard-response@1.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-image-keyboard-response@1.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-preload@1.1.0"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-categorize-html@1.1.2"></script>
-    <link href="https://unpkg.com/jspsych@7.1.2/css/jspsych.css" rel="stylesheet" type="text/css" />
+    <script src="./jspsych/jspsych.js"></script>
+    <script src="./jspsych/plugin-image-keyboard-response.js"></script>
+    <script src="./jspsych/plugin-html-keyboard-response.js"></script>
+    <link href="./jspsych/jspsych.css" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="my_experiment_style_MRI.css">
-    <script src="./lib/taskflow/client.js"></script>
+    <script src="./jspsych/plugin-categorize-html.js"></script>
   </head>
   <body></body>
   <script>
@@ -17,20 +15,7 @@
 
     /* initialize jsPsych */
     var jsPsych = initJsPsych({
-        on_finish: async function() {
-
-          if (window.location !== window.parent.location) {
-            // running on server so send data to the server
-            var measure = await TaskFlow.Client.Measure.get();
-            // get data out of jspsych
-            var task_data = JSON.stringify(jsPsych.data.get().values());
-            measure.complete = true;
-            measure.json = task_data;
-            // sync measure with server
-            await TaskFlow.Client.Measure.set(measure);
-            // continue on!
-            TaskFlow.Client.Measure.end();
-          } else {
+        on_finish: function() {
             // running local
             // display the data
             jsPsych.data.displayData();
@@ -40,13 +25,6 @@
 
     /* create timeline */
     var timeline = [];
-
-    /* preload images */
-    var preload = {
-      type: jsPsychPreload,
-      images: ['img/key.png','img/practice1.jpg','img/practice2.jpg','img/practice3.jpg','img/practice4.jpg','socialthreat/NS_NT1.jpg', 'socialthreat/NS_NT2.jpg', 'socialthreat/NS_NT3.jpg', 'socialthreat/NS_NT4.jpg', 'socialthreat/NS_NT5.jpg', 'socialthreat/NS_NT6.jpg', 'socialthreat/NS_NT7.jpg', 'socialthreat/NS_T1.jpg', 'socialthreat/NS_T2.jpg', 'socialthreat/NS_T3.jpg', 'socialthreat/NS_T4.jpg', 'socialthreat/NS_T5.jpg', 'socialthreat/NS_T6.jpg', 'socialthreat/NS_T7.jpg', 'socialthreat/S_NT1.jpg', 'socialthreat/S_NT2_.jpg','socialthreat/S_NT3_.jpg','socialthreat/S_NT4_.jpg','socialthreat/S_NT5_.jpg','socialthreat/S_NT6_.jpg', 'socialthreat/S_NT7_.jpg', 'socialthreat/S_T1.jpg', 'socialthreat/S_T2.jpg','socialthreat/S_T3_.jpg','socialthreat/S_T4_.jpg', 'socialthreat/S_T5_.jpg', 'socialthreat/S_T6_.jpg', 'socialthreat/S_T7_.jpg']
-    };
-    timeline.push(preload);
 
     /* define welcome message trial */
     var welcome = {
